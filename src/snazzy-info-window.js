@@ -120,7 +120,7 @@ function toLatLng(v) {
 
 // Export SnazzyInfoWindow even if google is not yet defined.
 const getGoogleClass = () => {
-    return typeof google !== 'undefined' ? google.maps.OverlayView : function noop() {};
+    return typeof google !== 'undefined' ? google.maps.OverlayView : function noop() { };
 };
 export default class SnazzyInfoWindow extends getGoogleClass() {
 
@@ -360,13 +360,13 @@ export default class SnazzyInfoWindow extends getGoogleClass() {
                 this._html.contentWrapper.style.borderWidth = bWidth.value + bWidth.units;
             }
             bWidth = Math.round((this._html.contentWrapper.offsetWidth -
-                     this._html.contentWrapper.clientWidth) / 2.0);
+                this._html.contentWrapper.clientWidth) / 2.0);
             bWidth = parseAttribute(`${bWidth}px`, '0px');
 
             if (this._opts.pointer) {
                 // Calculate the pointer length
                 let pLength = Math.min(this._html.pointerBorder.offsetHeight,
-                                       this._html.pointerBorder.offsetWidth);
+                    this._html.pointerBorder.offsetWidth);
                 pLength = parseAttribute(`${pLength}px`, '0px');
 
                 let triangleDiff = Math.round(bWidth.value * (_root2 - 1));
@@ -602,11 +602,17 @@ export default class SnazzyInfoWindow extends getGoogleClass() {
         }
 
         // Stop the mouse event propagation
-        const mouseEvents = ['click', 'dblclick', 'rightclick', 'contextmenu',
+        let mouseEvents = ['click', 'dblclick', 'rightclick', 'contextmenu',
             'drag', 'dragend', 'dragstart',
             'mousedown', 'mouseout', 'mouseover', 'mouseup',
             'touchstart', 'touchend', 'touchmove',
             'wheel', 'mousewheel', 'DOMMouseScroll', 'MozMousePixelScroll'];
+        if (this._opts.whitelistedMouseEvents) {
+            const whitelistedEvents = this._opts.whitelistedMouseEvents;
+            mouseEvents = mouseEvents.filter((event) => {
+                return whitelistedEvents.indexOf(event) < 0;
+            });
+        }
         mouseEvents.forEach((event) => {
             this.trackListener(google.maps.event.addDomListener(this._html.wrapper,
                 event, (e) => {
