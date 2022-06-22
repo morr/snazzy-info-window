@@ -591,8 +591,8 @@ export default class SnazzyInfoWindow extends getGoogleClass() {
 
         // Close button
         if (this._opts.showCloseButton && !this._opts.closeButtonMarkup) {
-            this.trackListener(google.maps.event.addDomListener(this._html.closeButton,
-                'click', (e) => {
+            this.trackListener(this._html.closeButton.addEventListener('click',
+                (e) => {
                     e.cancelBubble = true;
                     if (e.stopPropagation) {
                         e.stopPropagation();
@@ -614,8 +614,8 @@ export default class SnazzyInfoWindow extends getGoogleClass() {
             });
         }
         mouseEvents.forEach((event) => {
-            this.trackListener(google.maps.event.addDomListener(this._html.wrapper,
-                event, (e) => {
+            this.trackListener(this._html.wrapper.addEventListener(event,
+                (e) => {
                     e.cancelBubble = true;
                     if (e.stopPropagation) {
                         e.stopPropagation();
